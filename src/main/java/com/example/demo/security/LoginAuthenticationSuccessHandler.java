@@ -6,8 +6,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
@@ -20,7 +18,7 @@ public class LoginAuthenticationSuccessHandler implements AuthenticationSuccessH
         HttpSession session = request.getSession();
         UserDetails user = (UserDetails) authentication.getPrincipal();
         String url = getTargetUrl(user, session);
-
+        session.setMaxInactiveInterval(60);
         response.sendRedirect(url);
     }
 
