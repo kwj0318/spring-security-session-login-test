@@ -4,6 +4,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -16,17 +17,20 @@ public class LoginAuthenticationSuccessHandler implements AuthenticationSuccessH
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
+        HttpSession session = request.getSession();
         UserDetails user = (UserDetails) authentication.getPrincipal();
-        String url = getTargetUrl(user);
+        String url = getTargetUrl(user, session);
+
         response.sendRedirect(url);
-
-
     }
 
-    private String getTargetUrl(UserDetails user) {
+    private String getTargetUrl(UserDetails user, HttpSession session) {
+        session.setAttribute("id", user.getUsername());
         if (user.getAuthorities().stream().anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"))) {
+            session.setAttribute("memberType", "ADMIN");
             return "/admin/members";
         }
+        session.setAttribute("memberType", "USER");
         return "/members";
     }
 }
