@@ -45,10 +45,7 @@ public class WebSecurityConfig {
                         .authenticated())
                 .formLogin(login -> login.successHandler(authenticationSuccessHandler()))
                 .logout(Customizer.withDefaults())
-                .httpBasic(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults());
         return http.build();
     }
-
-
-
 }
